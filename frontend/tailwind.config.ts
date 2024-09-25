@@ -9,14 +9,18 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-    },
+    extend: {},
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui({
+    themes: {
+      light: {
+        colors: {
+          primary: { DEFAULT: "#ff5733", foreground: "#fff" },
+          secondary: { DEFAULT: "fdbeb1" }
+        }
+      }
+    }
+  })],
 };
 export default config;
