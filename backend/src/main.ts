@@ -9,6 +9,11 @@ async function bootstrap() {
 
   const port = parseInt(configService.get('port'), 10);
 
+  app.enableCors({
+    origin: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+  })
+
   await app.listen(port);
   console.log(`Running at port: ${port}`)
 }

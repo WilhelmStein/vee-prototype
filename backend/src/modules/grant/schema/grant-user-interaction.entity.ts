@@ -20,6 +20,6 @@ export class GrantUserInteraction {
     @Column({ nullable: true })
     feedbackText: string;
 
-    @Column({ type: 'enum', enum: ApplicationStatus, default: ApplicationStatus.PENDING })
+    @Column({ type: 'enum', enum: ApplicationStatus, nullable: true })
     status: ApplicationStatus;
 }

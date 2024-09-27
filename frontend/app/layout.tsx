@@ -31,7 +31,7 @@ const RootLayout = ({
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
       >
         <Providers className="flex justify-center">
-          <div className="flex-grow flex flex-col max-w-screen-lg">
+          <div className="flex-grow flex flex-col max-w-screen-xl">
             {/* Vee product navigation bar */}
             <NavBar />
 
