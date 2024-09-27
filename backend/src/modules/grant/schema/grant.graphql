@@ -1,0 +1,47 @@
+scalar Date
+
+type Query {
+  "Get all the matching grants for a specific user"
+  matchingGrantsOfUser(userId: ID!): [Grant!]!
+
+  "Get all previous grants of a specific user"
+  allGrantsOfUser(userId: ID!): [Grant!]!
+}
+
+type Mutation {
+  userApplyForGrant(userId: ID!, grantId: ID!): GrantUserInteraction!
+  userLikeGrant(userId: ID!, grantId: ID!): GrantUserInteraction!
+  userDisikeGrant(userId: ID!, grantId: ID!): GrantUserInteraction!
+}
+
+type Grant {
+  id: ID!
+  name: String!
+  applicationStartDate: Date!
+  applicationEndDate: Date!
+  location: String!
+  foundation: Foundation!
+  amountDollars: Float!
+  areasOfFunding: [String!]!
+}
+
+type GrantUserInteraction {
+  id: ID!
+  user: User!
+  grant: Grant!
+
+  likedStatus: LikedStatus
+  feedbackText: String
+  status: ApplicationStatus!
+}
+
+enum ApplicationStatus {
+  PENDING
+  REJECTED
+  ACCEPTED
+}
+
+enum LikedStatus {
+  LIKED
+  DISLIKED
+}

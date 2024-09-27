@@ -1,0 +1,6 @@
+type Foundation {
+  id: ID!
+  name: String!
+  photoUrl: String
+  postedGrants: [Grant!]!
+}
