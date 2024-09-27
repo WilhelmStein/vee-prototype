@@ -1,6 +1,7 @@
 import { Args, ID, Query, Resolver } from "@nestjs/graphql";
 import { GrantService } from "./grant.service";
 import { Grant } from "./schema/grant.entity";
+import { GrantUserInteraction } from "./schema/grant-user-interaction.entity";
 
 @Resolver('Grant')
 export class GrantResolver {
@@ -11,8 +12,8 @@ export class GrantResolver {
         return this.grantService.getMatchingGrantsOfUser(userId);
     }
 
-    @Query(() => [Grant])
-    allGrantsOfUser(@Args('userId', { type: () => ID }) userId: number) {
-        return this.grantService.getAllGrantsOfUser(userId);
+    @Query(() => [GrantUserInteraction])
+    allGrantUserInteractionsOfUser(@Args('userId', { type: () => ID }) userId: number) {
+        return this.grantService.getAllGrantUserInteractionsOfUser(userId);
     }
 }

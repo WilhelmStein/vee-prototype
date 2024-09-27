@@ -5,7 +5,7 @@ type Query {
   matchingGrantsOfUser(userId: ID!): [Grant!]!
 
   "Get all previous grants of a specific user"
-  allGrantsOfUser(userId: ID!): [Grant!]!
+  allGrantUserInteractionsOfUser(userId: ID!): [GrantUserInteraction!]!
 }
 
 type Mutation {
@@ -32,7 +32,7 @@ type GrantUserInteraction {
 
   likedStatus: LikedStatus
   feedbackText: String
-  status: ApplicationStatus!
+  status: ApplicationStatus
 }
 
 enum ApplicationStatus {

@@ -16,3 +16,22 @@ export const GET_MATCHING_GRANTS_OF_USER = gql`
         }
     }
 `
+
+export const GET_ALL_GRANT_USER_INTERACTIONS_OF_USER = gql`
+    query getAllGrantUserInteractionsOfUser($userId: ID!) {
+        allGrantUserInteractionsOfUser(userId: $userId) {
+            likedStatus
+            status
+            grant {
+                name,
+                applicationStartDate,
+                applicationEndDate
+                amountDollars,
+
+                foundation {
+                    name
+                }
+            }
+        }
+    }
+`

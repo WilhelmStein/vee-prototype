@@ -42,14 +42,14 @@ export class GrantService {
     }
 
     /**
-     * Given a `userId`, return all the grants that this user has interacted with
+     * Given a `userId`, return all the grantUserInteractions of that user
      */
-    async getAllGrantsOfUser(userId: number): Promise<Grant[]> {
+    async getAllGrantUserInteractionsOfUser(userId: number): Promise<GrantUserInteraction[]> {
         const interactions: GrantUserInteraction[] = await this.grantUserInteractionRepo.find({
             where: { user: { id: userId } },
-            relations: ['grant']
+            relations: ['grant', 'grant.foundation']
         })
 
-        return interactions.map((interaction) => interaction.grant);
+        return interactions;
     }
 }

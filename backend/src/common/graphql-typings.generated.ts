@@ -28,7 +28,7 @@ export interface Foundation {
 
 export interface IQuery {
     matchingGrantsOfUser(userId: string): Grant[] | Promise<Grant[]>;
-    allGrantsOfUser(userId: string): Grant[] | Promise<Grant[]>;
+    allGrantUserInteractionsOfUser(userId: string): GrantUserInteraction[] | Promise<GrantUserInteraction[]>;
 }
 
 export interface IMutation {
@@ -54,7 +54,7 @@ export interface GrantUserInteraction {
     grant: Grant;
     likedStatus?: Nullable<LikedStatus>;
     feedbackText?: Nullable<string>;
-    status: ApplicationStatus;
+    status?: Nullable<ApplicationStatus>;
 }
 
 export interface User {
