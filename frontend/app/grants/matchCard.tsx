@@ -135,7 +135,7 @@ const MatchCard = (props: MatchCardProps) => {
                 <div className="flex flex-col justify-start w-full">
 
                     {/* Organization name */}
-                    <h3 className="overflow-ellipsi whitespace-nowrap max-w-max overflow-hidden">{foundationName}</h3>
+                    <h3 className="overflow-ellipsis whitespace-nowrap max-w-max overflow-hidden">{foundationName}</h3>
 
                     {/* Grant name */}
                     <h1 className="overflow-ellipsis whitespace-nowrap max-w-max overflow-hidden">{grantName}</h1>
