@@ -2,14 +2,19 @@
 
 import { Table, TableBody, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import MatchCard from "./matchCard";
+import { GET_MATCHING_GRANTS_OF_USER } from "./graphql";
+import { useQuery } from "@apollo/client";
 
 type Match = {
-    organizationName: string;
-    grantName: string;
+    name: string;
     location: string;
-    fundingAreas: string[];
+    areasOfFunding: string[];
     grantAmountDollars: number;
     deadlineDate: Date;
+    amountDollars: number,
+    applicationStartDate: Date,
+    applicationEndDate: Date
+    foundation: { name: string }
 }
 
 type Grant = {
@@ -18,15 +23,15 @@ type Grant = {
 
 const Page = () => {
 
-    const matches: Match[] = [
-        {
-            organizationName: 'Cremonium Inc',
-            grantName: "Cremonian Grant",
-            location: "Cremonia",
-            fundingAreas: ["Heavy Industry", "Mining", "Metalworks", "Steel Refining", "Metalworking", "Anti-Union"],
-            grantAmountDollars: 25000,
-            deadlineDate: new Date()
-        }];
+    const matchingGrantsQueryResult = useQuery(GET_MATCHING_GRANTS_OF_USER, {
+        variables: {
+            /**
+             * Hardcoded for now, suppose that we have user authentication set up
+             * and that we have logged in as user with id 1
+             */
+            userId: 1
+        }
+    });
 
     const appliedGrants: Grant[] = [];
 
@@ -40,19 +45,32 @@ const Page = () => {
 
                 <div className="flex flex-row justify-evenly">
                     {
-                        matches.map(
-                            ({ organizationName, grantName, location, fundingAreas, grantAmountDollars, deadlineDate }: Match, idx: number) => (
-                                <MatchCard
-                                    key={idx}
-                                    organizationName={organizationName}
-                                    grantName={grantName}
-                                    location={location}
-                                    fundingAreas={fundingAreas}
-                                    grantAmountDollars={grantAmountDollars}
-                                    deadlineDate={deadlineDate}
-                                />
+                        matchingGrantsQueryResult
+                            .data
+                            ?.matchingGrantsOfUser
+                            ?.map(
+                                ({
+                                    name,
+                                    foundation,
+                                    location,
+                                    areasOfFunding,
+                                    amountDollars,
+                                    applicationStartDate,
+                                    applicationEndDate
+                                }: Match, idx: number) => (
+                                    <MatchCard
+                                        className="mr-2"
+                                        key={idx}
+                                        foundationName={foundation.name}
+                                        grantName={name}
+                                        location={location}
+                                        areasOfFunding={areasOfFunding}
+                                        amountDollars={amountDollars}
+                                        applicationStartDate={applicationStartDate}
+                                        applicationEndDate={applicationEndDate}
+                                    />
+                                )
                             )
-                        )
                     }
                 </div>
 

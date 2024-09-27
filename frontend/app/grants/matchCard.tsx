@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Image as ImageNextUI, Tooltip } from "@nextui-org/react";
+import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Image as ImageNextUI, Tooltip } from "@nextui-org/react";
 import MoneyBagIcon from "@public/icons/money-bag.svg";
 import ThumbsDownIcon from '@public/icons/thumbs_down.svg';
 import ThumbsUpIcon from '@public/icons/thumbs_up.svg';
@@ -6,12 +6,15 @@ import Image from "next/image";
 import { useMemo } from "react";
 
 type MatchCardProps = {
-    organizationName: string;
+    className: string;
+
+    foundationName: string;
     grantName: string;
     location: string;
-    fundingAreas: string[]
-    grantAmountDollars: number;
-    deadlineDate: Date;
+    areasOfFunding: string[]
+    amountDollars: number;
+    applicationStartDate: Date;
+    applicationEndDate: Date;
 };
 
 /**
@@ -71,22 +74,41 @@ const FundingAreasContainer = ({ fundingAreas }: { fundingAreas: string[] }) => 
  */
 const MatchCard = (props: MatchCardProps) => {
 
-    const { organizationName, grantName, location, fundingAreas, grantAmountDollars, deadlineDate } = props;
+    const {
+        className,
+        foundationName,
+        grantName,
+        location,
+        areasOfFunding,
+        amountDollars,
+        applicationStartDate,
+        applicationEndDate,
+    } = props;
 
-    const deadlineStr = useMemo(() => (`${deadlineDate.getDate()} / ${deadlineDate.getMonth()}`), [deadlineDate])
+    const applicationStartDateStr = useMemo(
+        () => {
+            if (new Date(applicationStartDate) > new Date()) {
+                return 'Apply now'
+            }
+
+            return `${new Date(applicationStartDate).getDate()} / ${new Date(applicationStartDate).getMonth()}`
+        },
+        [applicationStartDate]
+    );
+
+    const applicationEndDateStr = useMemo(
+        () => (`${new Date(applicationEndDate).getDate()} / ${new Date(applicationEndDate).getMonth()}`),
+        [applicationEndDate]
+    );
 
     return (
-        <Card className="flex flex-grow max-w-xs p-4">
-            <CardHeader className="flex flex-col">
+        <Card className={`flex flex-grow max-w-xs p-4 ${className}`}>
+            <CardHeader className="flex flex-col h-28">
 
                 {/* Organization avatar & thumb icons row */}
                 <div className="flex items-center justify-between w-full">
-                    <ImageNextUI
-                        src="/icon.ico"
-                        width={64}
-                        height={64}
-                        alt=""
-                    />
+
+                    <Avatar name={foundationName[0]} radius="full" />
 
                     <div className="flex">
                         <Button isIconOnly className="mr-4 bg-white border p-1">
@@ -113,10 +135,10 @@ const MatchCard = (props: MatchCardProps) => {
                 <div className="flex flex-col justify-start w-full">
 
                     {/* Organization name */}
-                    <h3>{organizationName}</h3>
+                    <h3 className="overflow-ellipsi whitespace-nowrap max-w-max overflow-hidden">{foundationName}</h3>
 
                     {/* Grant name */}
-                    <h1>{grantName}</h1>
+                    <h1 className="overflow-ellipsis whitespace-nowrap max-w-max overflow-hidden">{grantName}</h1>
 
                 </div>
 
@@ -138,7 +160,7 @@ const MatchCard = (props: MatchCardProps) => {
 
 
                         <div>
-                            <h1 style={{ color: '#ff5733' }}>${grantAmountDollars}</h1>
+                            <h1 style={{ color: '#ff5733' }}>${amountDollars}</h1>
                             <h3>Avg Amount</h3>
                         </div>
                     </div>
@@ -147,7 +169,7 @@ const MatchCard = (props: MatchCardProps) => {
                     <div className="flex flex-col justify-evenly w-1/2 bg-gray-100 rounded-lg p-2">
                         <div>
                             <h4 className="text-gray-400">Deadline</h4>
-                            <h4>{deadlineStr}</h4>
+                            <h4>{applicationEndDateStr}</h4>
                         </div>
 
                         {/* Divider */}
@@ -155,7 +177,7 @@ const MatchCard = (props: MatchCardProps) => {
 
                         <div>
                             <h4 className="text-gray-400">Getting Started</h4>
-                            <h4>Apply Online</h4>
+                            <h4>{applicationStartDateStr}</h4>
                         </div>
                     </div>
                 </div>
@@ -169,7 +191,7 @@ const MatchCard = (props: MatchCardProps) => {
                 {/* Areas of funding */}
                 <h3 className="text-gray-400">Areas of funding</h3>
 
-                <FundingAreasContainer fundingAreas={fundingAreas} />
+                <FundingAreasContainer fundingAreas={areasOfFunding} />
 
             </CardBody>
 

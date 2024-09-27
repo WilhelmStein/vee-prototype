@@ -23,18 +23,19 @@ export class GrantService {
     async getMatchingGrantsOfUser(userId: number): Promise<Grant[]> {
         /** 
          * Suppose that we had magic algorithm stuff here, but for our purposes we will be receiving 
-         * the first 5 grants available in the postgresDB that the user hasn't marked  
+         * the first 4 grants available in the postgresDB that the user hasn't marked  
         */
 
         const matchingGrants: Grant[] = await this.grantRepo
             .createQueryBuilder('grant')
+            .leftJoinAndSelect('grant.foundation', 'foundation')
             .leftJoin(
                 GrantUserInteraction,
                 'interaction',
                 `interaction.grantId = grant.id AND interaction.userId = ${userId}`
             ).where('interaction.id IS NULL')
             .orderBy('RANDOM()')
-            .limit(5)
+            .limit(4)
             .getMany();
 
         return matchingGrants;
