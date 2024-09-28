@@ -6,6 +6,9 @@ import ThumbsUpIcon from '@public/icons/thumbs_up.svg';
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
 
+import styles from './matchedGrantCard.module.css'
+import clsx from "clsx";
+
 type MatchedGrantCardProps = {
     // General props
     className: string;
@@ -150,7 +153,9 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
 
 
     return (
-        <Card className={`flex flex-grow max-w-xs p-4 ${className}`}>
+        <Card className={clsx(`flex flex-grow max-w-xs p-4 ${styles[`hoverable-card`]} ${className}`, {
+            [styles['hoverable-card-hovered']]: isFeedbackPopoverOpen
+        })}>
             <CardHeader className="flex flex-col h-auto py-0">
 
                 {/* Organization avatar & thumb icons row */}
@@ -270,7 +275,7 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
 
             </CardBody>
 
-            <CardFooter>
+            <CardFooter className={styles['hoverable-card-footer']} >
                 <Button
                     color="primary"
                     fullWidth
