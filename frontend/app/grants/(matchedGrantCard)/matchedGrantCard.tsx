@@ -148,6 +148,7 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
             onThumbsDown(id, feedbackText)
         }
 
+        setFeedbackText('')
         toggleFeedbackPopover()
     }, [likedStatus, toggleFeedbackPopover]);
 
@@ -159,7 +160,6 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
             <CardHeader className="flex flex-col h-auto py-0">
 
                 {/* Organization avatar & thumb icons row */}
-
 
                 <div className="flex items-center justify-between w-full mb-1">
                     <Avatar name={foundationName[0]} radius="full" />
