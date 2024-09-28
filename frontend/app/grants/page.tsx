@@ -5,7 +5,7 @@ import MatchedGrantCard from "./(matchedGrantCard)/matchedGrantCard";
 import { GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, GET_MATCHING_GRANTS_OF_USER, INTERACT_WITH_GRANT } from "./graphql";
 import { useMutation, useQuery } from "@apollo/client";
 import React, { useCallback, useMemo } from "react";
-import { ApplicationStatus, Grant, GrantInteractionType, GrantUserInteraction, IMutation, IQuery, LikedStatus } from "@lib/graphql-typings.generated";
+import { ApplicationStatus, Grant, GrantInteractionType, GrantUserInteraction, LikedStatus } from "@lib/graphql-typings.generated";
 import MatchedGrantSkeleton from "./(matchedGrantCard)/matchedGrantSkeleton";
 import AllGrantInteractionsTableSkeleton from "./allGrantInteractionsTableSkeleton";
 
@@ -217,6 +217,7 @@ const Page = () => {
                                                 grant,
                                                 status,
                                                 likedStatus,
+                                                matchDate
                                             }: GrantUserInteraction) => (
                                                 <TableRow>
                                                     <TableCell className="text-gray-400">{grant.foundation.name}</TableCell>
@@ -231,7 +232,7 @@ const Page = () => {
 
                                                     <TableCell className="text-gray-400">{new Date(grant.applicationEndDate).toISOString().split('T')[0]}</TableCell>
 
-                                                    <TableCell className="text-gray-400">{new Date(grant.applicationStartDate).toISOString().split('T')[0]}</TableCell>
+                                                    <TableCell className="text-gray-400">{new Date(matchDate).toISOString().split('T')[0]}</TableCell>
                                                 </TableRow>
                                             )
                                         )

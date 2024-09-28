@@ -106,6 +106,7 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
     const [likedStatus, setLikedStatus] = useState<LikedStatus | undefined>(undefined);
     const [feedbackText, setFeedbackText] = useState('');
 
+
     // General variables
     const applicationStartDateStr = useMemo(
         () => {

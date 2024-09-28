@@ -42,6 +42,8 @@ type GrantUserInteraction {
   likedStatus: LikedStatus
   feedbackText: String
   status: ApplicationStatus
+
+  matchDate: Date!
 }
 
 enum ApplicationStatus {
