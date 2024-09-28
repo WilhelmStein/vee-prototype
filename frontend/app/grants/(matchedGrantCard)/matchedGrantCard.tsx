@@ -110,13 +110,13 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
                 return 'Apply now'
             }
 
-            return `${new Date(applicationStartDate).getDate()} / ${new Date(applicationStartDate).getMonth()}`
+            return new Date(applicationStartDate).toISOString().split('T')[0]
         },
         [applicationStartDate]
     );
 
     const applicationEndDateStr = useMemo(
-        () => (`${new Date(applicationEndDate).getDate()} / ${new Date(applicationEndDate).getMonth()}`),
+        () => (new Date(applicationEndDate).toISOString().split('T')[0]),
         [applicationEndDate]
     );
 
@@ -139,8 +139,14 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
     }, [isFeedbackPopoverOpen, setLikedStatus, toggleFeedbackPopover])
 
     const handleOnPressSubmitFeedback = useCallback(() => {
+        if (likedStatus === LikedStatus.LIKED) {
+            onThumbsUp(id, feedbackText)
+        } else if (likedStatus === LikedStatus.DISLIKED) {
+            onThumbsDown(id, feedbackText)
+        }
 
-    }, []);
+        toggleFeedbackPopover()
+    }, [likedStatus, toggleFeedbackPopover]);
 
 
     return (
@@ -245,7 +251,7 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
                         <div className="border rounded-full" />
 
                         <div>
-                            <h4 className="text-gray-400">Getting Started</h4>
+                            <h4 className="text-gray-400">Starts At</h4>
                             <h4>{applicationStartDateStr}</h4>
                         </div>
                     </div>

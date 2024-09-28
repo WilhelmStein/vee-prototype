@@ -1,12 +1,12 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import MatchedGrantCard from "./matchedGrantCard";
+import MatchedGrantCard from "./(matchedGrantCard)/matchedGrantCard";
 import { GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, GET_MATCHING_GRANTS_OF_USER, INTERACT_WITH_GRANT } from "./graphql";
 import { useMutation, useQuery } from "@apollo/client";
 import React, { useCallback, useMemo } from "react";
-import { ApplicationStatus, Grant, GrantInteractionType, GrantUserInteraction, LikedStatus } from "@lib/graphql-typings.generated";
-import MatchedGrantSkeleton from "./matchedGrantSkeleton";
+import { ApplicationStatus, Grant, GrantInteractionType, GrantUserInteraction, IMutation, IQuery, LikedStatus } from "@lib/graphql-typings.generated";
+import MatchedGrantSkeleton from "./(matchedGrantCard)/matchedGrantSkeleton";
 import AllGrantInteractionsTableSkeleton from "./allGrantInteractionsTableSkeleton";
 
 /**
@@ -126,6 +126,15 @@ const Page = () => {
     );
 
 
+    // General variables
+    const filteredGrantInteractions = useMemo(() => allGrantUserInteractionsOfUserQuery.
+        data?.
+        allGrantUserInteractionsOfUser.
+        filter((interaction: GrantUserInteraction) => interaction.likedStatus !== LikedStatus.DISLIKED),
+        [allGrantUserInteractionsOfUserQuery.data]
+    );
+
+
     return (
         <div className="flex flex-col">
 
@@ -202,9 +211,7 @@ const Page = () => {
 
                             <TableBody>
                                 {
-                                    allGrantUserInteractionsOfUserQuery
-                                        .data
-                                        ?.allGrantUserInteractionsOfUser
+                                    filteredGrantInteractions
                                         ?.map(
                                             ({
                                                 grant,

@@ -88,7 +88,7 @@ export class GrantService {
             interaction.status = ApplicationStatus.PENDING;
         } else if (interactionType === GrantInteractionType.THUMBS_DOWN) {
 
-            if (interaction.status !== null) {
+            if (interaction.status) {
                 throw new BadRequestException('User cannot dislike a grant that they have applied to')
             }
 
