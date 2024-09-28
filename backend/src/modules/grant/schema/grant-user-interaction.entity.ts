@@ -1,28 +1,32 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
-import { User } from '@modules/user/schema/user.entity';
+import {
+  ApplicationStatus,
+  GrantUserInteraction as GrantUserInteractionBase,
+  LikedStatus,
+} from '@common/graphql-typings.generated';
 import { Grant } from '@modules/grant/schema/grant.entity';
-import { ApplicationStatus, LikedStatus } from '@common/graphql-typings.generated';
+import { User } from '@modules/user/schema/user.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class GrantUserInteraction {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class GrantUserInteraction implements GrantUserInteractionBase {
+  @PrimaryGeneratedColumn()
+  id: string;
 
-    @ManyToOne(() => User, user => user.grantInteractions)
-    user: User;
+  @ManyToOne(() => User, (user) => user.grantInteractions)
+  user: User;
 
-    @ManyToOne(() => Grant, grant => grant.userInteractions)
-    grant: Grant;
+  @ManyToOne(() => Grant, (grant) => grant.userInteractions)
+  grant: Grant;
 
-    @Column({ type: 'enum', enum: LikedStatus, nullable: true })
-    likedStatus: LikedStatus;
+  @Column({ type: 'enum', enum: LikedStatus, nullable: true })
+  likedStatus: LikedStatus;
 
-    @Column({ nullable: true })
-    feedbackText: string;
+  @Column({ nullable: true })
+  feedbackText: string;
 
-    @Column({ type: 'enum', enum: ApplicationStatus, nullable: true })
-    status: ApplicationStatus;
+  @Column({ type: 'enum', enum: ApplicationStatus, nullable: true })
+  status: ApplicationStatus;
 
-    @Column({ type: 'timestamp' })
-    matchDate: Date;
+  @Column({ type: 'timestamp' })
+  matchDate: Date;
 }

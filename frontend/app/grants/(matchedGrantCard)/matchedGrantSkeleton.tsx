@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Skeleton } from "@nextui-org/react";
+import { Card, Skeleton } from "@nextui-org/react";
 
 
 const MatchedGrantSkeleton = () => {

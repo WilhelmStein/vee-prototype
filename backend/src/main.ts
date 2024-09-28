@@ -11,10 +11,10 @@ async function bootstrap() {
 
   app.enableCors({
     origin: true,
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
 
   await app.listen(port);
-  console.log(`Running at port: ${port}`)
+  console.log(`Running at port: ${port}`);
 }
 bootstrap();

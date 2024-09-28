@@ -1,13 +1,13 @@
 "use client";
 
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import MatchedGrantCard from "./(matchedGrantCard)/matchedGrantCard";
-import { GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, GET_MATCHING_GRANTS_OF_USER, INTERACT_WITH_GRANT } from "./graphql";
 import { useMutation, useQuery } from "@apollo/client";
-import React, { useCallback, useMemo } from "react";
 import { ApplicationStatus, Grant, GrantInteractionType, GrantUserInteraction, LikedStatus } from "@lib/graphql-typings.generated";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { useCallback, useMemo } from "react";
+import MatchedGrantCard from "./(matchedGrantCard)/matchedGrantCard";
 import MatchedGrantSkeleton from "./(matchedGrantCard)/matchedGrantSkeleton";
 import AllGrantInteractionsTableSkeleton from "./allGrantInteractionsTableSkeleton";
+import { GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, GET_MATCHING_GRANTS_OF_USER, INTERACT_WITH_GRANT } from "./graphql";
 
 /**
  * Hardcoded for now, suppose that we have user authentication set up
@@ -29,7 +29,7 @@ const ApplicationStatusTableCellContents = (props: ApplicationStatusTableCellPro
     const { applicationStatus, likedStatus } = props;
 
     const { backgroundColor, text, textColor } = useMemo(() => {
-        if (applicationStatus === null) {
+        if (applicationStatus === null && likedStatus === LikedStatus.LIKED) {
             return { backgroundColor: '#e5e3e5', textColor: '#5d585e', text: 'Not Applied' }
         }
 
@@ -218,8 +218,8 @@ const Page = () => {
                                                 status,
                                                 likedStatus,
                                                 matchDate
-                                            }: GrantUserInteraction) => (
-                                                <TableRow>
+                                            }: GrantUserInteraction, idx: number) => (
+                                                <TableRow key={idx}>
                                                     <TableCell className="text-gray-400">{grant.foundation.name}</TableCell>
 
                                                     <TableCell className="text-gray-400">{grant.name}</TableCell>

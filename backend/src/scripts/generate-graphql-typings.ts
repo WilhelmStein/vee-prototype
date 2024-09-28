@@ -1,8 +1,8 @@
-import { GraphQLDefinitionsFactory } from "@nestjs/graphql";
+import { GraphQLDefinitionsFactory } from '@nestjs/graphql';
 import { join } from 'path';
 
 const definitionsFactory = new GraphQLDefinitionsFactory();
 definitionsFactory.generate({
-    typePaths: ['./src/**/*.graphql'],
-    path: join(process.cwd(), 'src/common/graphql-typings.generated.ts')
-})
+  typePaths: ['./src/**/*.graphql'],
+  path: join(process.cwd(), 'src/common/graphql-typings.generated.ts'),
+});

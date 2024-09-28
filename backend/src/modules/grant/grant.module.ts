@@ -7,6 +7,6 @@ import { GrantUserInteraction } from './schema/grant-user-interaction.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Grant, GrantUserInteraction])],
-  providers: [GrantService, GrantResolver]
+  providers: [GrantService, GrantResolver],
 })
-export class GrantModule { }
+export class GrantModule {}
