@@ -1,13 +1,12 @@
 import { Grant, LikedStatus } from "@lib/graphql-typings.generated";
-import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Image as ImageNextUI, Popover, PopoverContent, PopoverTrigger, Textarea, Tooltip } from "@nextui-org/react";
+import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Popover, PopoverContent, PopoverTrigger, Textarea } from "@nextui-org/react";
 import MoneyBagIcon from "@public/icons/money-bag.svg";
 import ThumbsDownIcon from '@public/icons/thumbs_down.svg';
 import ThumbsUpIcon from '@public/icons/thumbs_up.svg';
+import clsx from "clsx";
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
-
-import styles from './matchedGrantCard.module.css'
-import clsx from "clsx";
+import styles from './matchedGrantCard.module.css';
 
 type MatchedGrantCardProps = {
     // General props
@@ -33,22 +32,15 @@ const FundingAreasContainer = ({ fundingAreas }: { fundingAreas: string[] }) => 
         () => (
             fundingAreas.slice(0, MAX_DISPLAYED_AREAS)
         ),
-        [fundingAreas]
+        [fundingAreas, MAX_DISPLAYED_AREAS]
     );
 
     const nonDisplayedFundingAreas: string[] = useMemo(
         () => (
             fundingAreas.slice(FINAL_DISPLAYED_AREA_IDX, -1)
         ),
-        [fundingAreas]
+        [fundingAreas, FINAL_DISPLAYED_AREA_IDX]
     );
-
-    const nonDisplayedFundingAreasTooltip: string = useMemo(
-        () => (
-            nonDisplayedFundingAreas.join(",\n")
-        ),
-        [nonDisplayedFundingAreas]
-    )
 
     return <div className="grid grid-cols-2 gap-2">
         {
@@ -151,7 +143,7 @@ const MatchedGrantCard = (props: MatchedGrantCardProps) => {
 
         setFeedbackText('')
         toggleFeedbackPopover()
-    }, [likedStatus, toggleFeedbackPopover]);
+    }, [id, feedbackText, likedStatus, setFeedbackText, toggleFeedbackPopover, onThumbsDown, onThumbsUp]);
 
 
     return (

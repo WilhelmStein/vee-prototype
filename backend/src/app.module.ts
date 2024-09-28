@@ -28,26 +28,24 @@ import { join } from 'path';
         database: configService.getOrThrow('postgresDB'),
         entities: [User, Grant, Foundation, GrantUserInteraction],
         // Development environment configurations
-        ...(
-          configService.getOrThrow('nodeEnv') === NodeEnv.Development &&
-          { synchronize: true }
-        ),
+        ...(configService.getOrThrow('nodeEnv') === NodeEnv.Development && {
+          synchronize: true,
+        }),
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([User, Grant, Foundation, GrantUserInteraction]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'],
       definitions: {
-        path: join(process.cwd(), 'src/common/graphql-typings.generated.ts')
+        path: join(process.cwd(), 'src/common/graphql-typings.generated.ts'),
       },
-
       playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()]
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     GrantModule,
   ],
   providers: [SeedService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,8 +1,8 @@
 "use client";
 
 import { ApolloProvider } from "@apollo/client";
-import { NextUIProvider } from "@nextui-org/react";
 import apolloClient from "@lib/apolloClient";
+import { NextUIProvider } from "@nextui-org/react";
 
 export function Providers({ children, className }: { children: React.ReactNode, className?: string }) {
   return (

@@ -1,11 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Grant as GrantBase } from '@common/graphql-typings.generated';
 import { Foundation } from '@modules/foundation/schema/foundation.entity';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GrantUserInteraction } from './grant-user-interaction.entity';
 
 @Entity()
-export class Grant {
+export class Grant implements GrantBase {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   name: string;
@@ -25,9 +26,9 @@ export class Grant {
   @Column('simple-array')
   areasOfFunding: string[];
 
-  @ManyToOne(() => Foundation, foundation => foundation.postedGrants)
+  @ManyToOne(() => Foundation, (foundation) => foundation.postedGrants)
   foundation: Foundation;
 
-  @OneToMany(() => GrantUserInteraction, interaction => interaction.grant)
+  @OneToMany(() => GrantUserInteraction, (interaction) => interaction.grant)
   userInteractions: GrantUserInteraction[];
 }

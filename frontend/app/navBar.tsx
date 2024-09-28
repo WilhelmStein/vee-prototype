@@ -1,6 +1,6 @@
+import Logo from "@/app/public/logo.svg";
+import { Link, NavbarContent, NavbarItem, Navbar as NavBarNextUI } from "@nextui-org/react";
 import Image from "next/image";
-import Logo from "@/app/public/logo.svg"
-import { Button, NavbarBrand, NavbarContent, NavbarItem, Navbar as NavBarNextUI, Link } from "@nextui-org/react";
 
 const NavBar = () => {
     return (

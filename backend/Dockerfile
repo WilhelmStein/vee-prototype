@@ -5,6 +5,7 @@ RUN corepack enable
 
 COPY . /app
 WORKDIR /app
+COPY ./.env.example ./.env
 
 RUN pnpm i --frozen-lockfile
 RUN pnpm build
