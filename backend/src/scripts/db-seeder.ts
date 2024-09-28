@@ -8,9 +8,9 @@ const bootstrap = async () => {
 
     try {
         await seedService.seed(); // Call your seeding method
-        console.log('Seeding completed successfully.');
+        console.log('Seeding completed successfully 🌹.');
     } catch (error) {
-        console.error('Seeding failed:', error);
+        console.error('Seeding failed 🥀:\n\t', error);
     } finally {
         await app.close(); // Close the application context
     }
