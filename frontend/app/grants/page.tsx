@@ -1,52 +1,36 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import MatchCard from "./matchCard";
-import { GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, GET_MATCHING_GRANTS_OF_USER } from "./graphql";
-import { useQuery } from "@apollo/client";
-import React, { useMemo } from "react";
+import MatchedGrantCard from "./matchedGrantCard";
+import { GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, GET_MATCHING_GRANTS_OF_USER, INTERACT_WITH_GRANT } from "./graphql";
+import { useMutation, useQuery } from "@apollo/client";
+import React, { useCallback, useMemo } from "react";
+import { ApplicationStatus, Grant, GrantInteractionType, GrantUserInteraction, LikedStatus } from "@lib/graphql-typings.generated";
+import MatchedGrantSkeleton from "./matchedGrantSkeleton";
+import AllGrantInteractionsTableSkeleton from "./allGrantInteractionsTableSkeleton";
 
-type Grant = {
-    name: string;
-    location: string;
-    areasOfFunding: string[];
-    deadlineDate: Date;
-    amountDollars: number,
-    applicationStartDate: Date,
-    applicationEndDate: Date
-    foundation: { name: string }
-}
+/**
+ * Hardcoded for now, suppose that we have user authentication set up
+ * and that we have logged in as user with id 1
+ */
+const LOGGED_IN_USER_ID = 1;
 
-enum LikedStatus {
-    LIKED = "LIKED",
-    DISLIKED = "DISLIKED"
-}
-
-enum ApplicationStatus {
-    PENDING = "PENDING",
-    REJECTED = "REJECTED",
-    ACCEPTED = "ACCEPTED"
-}
-
-type GrantUserInteraction = {
-    grant: Grant,
-    likedStatus: LikedStatus,
-    feedbackText: string,
-    status: ApplicationStatus,
-}
 
 type ApplicationStatusTableCellProps = {
-    likedStatus: LikedStatus;
-    applicationStatus: ApplicationStatus;
+    likedStatus?: LikedStatus | null;
+    applicationStatus?: ApplicationStatus | null;
 }
 
+/**
+ * Utility component with custom logic that renders a `GrantUserInteraction`'s status
+ */
 const ApplicationStatusTableCellContents = (props: ApplicationStatusTableCellProps) => {
 
     const { applicationStatus, likedStatus } = props;
 
     const { backgroundColor, text, textColor } = useMemo(() => {
-        if (applicationStatus === undefined) {
-            return { backgroundColor: '#', textColor: '#', text: 'Observing' }
+        if (applicationStatus === null) {
+            return { backgroundColor: '#e5e3e5', textColor: '#5d585e', text: 'Not Applied' }
         }
 
         let backgroundColor, textColor;
@@ -76,27 +60,71 @@ const ApplicationStatusTableCellContents = (props: ApplicationStatusTableCellPro
     );
 };
 
+
 const Page = () => {
 
+    // Querried Data
     const matchingGrantsQueryResult = useQuery(GET_MATCHING_GRANTS_OF_USER, {
         variables: {
-            /**
-             * Hardcoded for now, suppose that we have user authentication set up
-             * and that we have logged in as user with id 1
-             */
-            userId: 1
+            userId: LOGGED_IN_USER_ID
         }
     });
 
     const allGrantUserInteractionsOfUserQuery = useQuery(GET_ALL_GRANT_USER_INTERACTIONS_OF_USER, {
         variables: {
-            /**
-             * Hardcoded for now, suppose that we have user authentication set up
-             * and that we have logged in as user with id 1
-             */
-            userId: 1
+            userId: LOGGED_IN_USER_ID
         }
     });
+
+
+    // Graphql Mutations
+    const [interactWithGrant] = useMutation(INTERACT_WITH_GRANT, {
+        variables: {
+            userId: LOGGED_IN_USER_ID
+        },
+        onCompleted: () => {
+            matchingGrantsQueryResult.refetch();
+            allGrantUserInteractionsOfUserQuery.refetch();
+        }
+    })
+
+
+    // Event Handlers
+    const handleGrantInteraction = useCallback(
+        (
+            grantId: string,
+            interactionType: GrantInteractionType,
+            feedbackText?: string
+        ) => {
+            interactWithGrant({
+                variables: {
+                    grantId,
+                    interactionType,
+                    feedbackText
+                }
+            })
+        },
+        [interactWithGrant]
+    );
+
+    const handleThumbsUp = useCallback((grantId: string, feedbackText?: string) => {
+        handleGrantInteraction(grantId, GrantInteractionType.THUMBS_UP, feedbackText)
+    },
+        [handleGrantInteraction]
+    );
+
+    const handleThumbsDown = useCallback((grantId: string, feedbackText?: string) => {
+        handleGrantInteraction(grantId, GrantInteractionType.THUMBS_DOWN, feedbackText)
+    },
+        [handleGrantInteraction]
+    );
+
+    const handleApply = useCallback((grantId: string) => {
+        handleGrantInteraction(grantId, GrantInteractionType.APPLY)
+    },
+        [handleGrantInteraction]
+    );
+
 
     return (
         <div className="flex flex-col">
@@ -109,32 +137,28 @@ const Page = () => {
 
                 <div className="flex flex-row justify-evenly">
                     {
-                        matchingGrantsQueryResult
-                            .data
-                            ?.matchingGrantsOfUser
-                            ?.map(
-                                ({
-                                    name,
-                                    foundation,
-                                    location,
-                                    areasOfFunding,
-                                    amountDollars,
-                                    applicationStartDate,
-                                    applicationEndDate
-                                }: Grant, idx: number) => (
-                                    <MatchCard
-                                        className="mr-2"
-                                        key={idx}
-                                        foundationName={foundation.name}
-                                        grantName={name}
-                                        location={location}
-                                        areasOfFunding={areasOfFunding}
-                                        amountDollars={amountDollars}
-                                        applicationStartDate={applicationStartDate}
-                                        applicationEndDate={applicationEndDate}
-                                    />
-                                )
+                        matchingGrantsQueryResult.loading ?
+
+                            // If loading, render a skeleton of 4 items
+                            Array.from({ length: 4 }).map((_, idx) =>
+                                <MatchedGrantSkeleton key={idx} />
                             )
+                            :
+                            matchingGrantsQueryResult
+                                .data
+                                ?.matchingGrantsOfUser
+                                ?.map(
+                                    (matchedGrant: Grant, idx: number) => (
+                                        <MatchedGrantCard
+                                            className="mr-2"
+                                            key={idx}
+                                            grant={matchedGrant}
+                                            onThumbsUp={handleThumbsUp}
+                                            onThumbsDown={handleThumbsDown}
+                                            onApply={handleApply}
+                                        />
+                                    )
+                                )
                     }
                 </div>
 
@@ -145,66 +169,70 @@ const Page = () => {
             <div className="mt-10">
                 <h1 className="mb-2">All Grant Interactions</h1>
 
-                <div>
-                    <Table>
-                        <TableHeader>
-                            <TableColumn>
-                                Foundation name
-                            </TableColumn>
+                {
+                    allGrantUserInteractionsOfUserQuery.loading ?
+                        <AllGrantInteractionsTableSkeleton rows={4} />
+                        :
+                        <Table>
+                            <TableHeader>
+                                <TableColumn>
+                                    Foundation name
+                                </TableColumn>
 
-                            <TableColumn>
-                                Grant Name
-                            </TableColumn>
+                                <TableColumn>
+                                    Grant Name
+                                </TableColumn>
 
-                            <TableColumn>
-                                Average amount
-                            </TableColumn>
+                                <TableColumn>
+                                    Average amount
+                                </TableColumn>
 
-                            <TableColumn>
-                                Status
-                            </TableColumn>
+                                <TableColumn>
+                                    Status
+                                </TableColumn>
 
-                            <TableColumn>
-                                Deadline
-                            </TableColumn>
+                                <TableColumn>
+                                    Deadline
+                                </TableColumn>
 
-                            <TableColumn>
-                                Post date
-                            </TableColumn>
-                        </TableHeader>
+                                <TableColumn>
+                                    Post date
+                                </TableColumn>
+                            </TableHeader>
 
-                        <TableBody>
-                            {
-                                allGrantUserInteractionsOfUserQuery
-                                    .data
-                                    ?.allGrantUserInteractionsOfUser
-                                    ?.map(
-                                        ({
-                                            grant,
-                                            status,
-                                            likedStatus,
-                                        }: GrantUserInteraction) => (
-                                            <TableRow>
-                                                <TableCell className="text-gray-400">{grant.foundation.name}</TableCell>
+                            <TableBody>
+                                {
+                                    allGrantUserInteractionsOfUserQuery
+                                        .data
+                                        ?.allGrantUserInteractionsOfUser
+                                        ?.map(
+                                            ({
+                                                grant,
+                                                status,
+                                                likedStatus,
+                                            }: GrantUserInteraction) => (
+                                                <TableRow>
+                                                    <TableCell className="text-gray-400">{grant.foundation.name}</TableCell>
 
-                                                <TableCell className="text-gray-400">{grant.name}</TableCell>
+                                                    <TableCell className="text-gray-400">{grant.name}</TableCell>
 
-                                                <TableCell className="text-gray-400">${grant.amountDollars}</TableCell>
+                                                    <TableCell className="text-gray-400">${grant.amountDollars}</TableCell>
 
-                                                <TableCell>
-                                                    <ApplicationStatusTableCellContents likedStatus={likedStatus} applicationStatus={status} />
-                                                </TableCell>
+                                                    <TableCell>
+                                                        <ApplicationStatusTableCellContents likedStatus={likedStatus} applicationStatus={status} />
+                                                    </TableCell>
 
-                                                <TableCell className="text-gray-400">{new Date(grant.applicationEndDate).toISOString().split('T')[0]}</TableCell>
+                                                    <TableCell className="text-gray-400">{new Date(grant.applicationEndDate).toISOString().split('T')[0]}</TableCell>
 
-                                                <TableCell className="text-gray-400">{new Date(grant.applicationStartDate).toISOString().split('T')[0]}</TableCell>
-                                            </TableRow>
+                                                    <TableCell className="text-gray-400">{new Date(grant.applicationStartDate).toISOString().split('T')[0]}</TableCell>
+                                                </TableRow>
+                                            )
                                         )
-                                    )
-                            }
-                        </TableBody>
-                    </Table>
-                </div>
+                                }
+                            </TableBody>
+                        </Table>
+                }
+
             </div>
         </div>
     );

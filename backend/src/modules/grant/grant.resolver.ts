@@ -1,7 +1,8 @@
-import { Args, ID, Query, Resolver } from "@nestjs/graphql";
+import { GrantInteractionType } from '@common/graphql-typings.generated';
+import { Args, ID, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { GrantService } from "./grant.service";
-import { Grant } from "./schema/grant.entity";
 import { GrantUserInteraction } from "./schema/grant-user-interaction.entity";
+import { Grant } from "./schema/grant.entity";
 
 @Resolver('Grant')
 export class GrantResolver {
@@ -15,5 +16,15 @@ export class GrantResolver {
     @Query(() => [GrantUserInteraction])
     allGrantUserInteractionsOfUser(@Args('userId', { type: () => ID }) userId: number) {
         return this.grantService.getAllGrantUserInteractionsOfUser(userId);
+    }
+
+    @Mutation(() => GrantUserInteraction)
+    async interactWithGrant(
+        @Args('grantId', { type: () => ID }) grantId: number,
+        @Args('userId', { type: () => ID }) userId: number,
+        @Args('interactionType') interactionType: GrantInteractionType,
+        @Args('feedbackText') feedbackText?: string,
+    ): Promise<GrantUserInteraction> {
+        return this.grantService.interactWithGrant(grantId, userId, interactionType, feedbackText);
     }
 }

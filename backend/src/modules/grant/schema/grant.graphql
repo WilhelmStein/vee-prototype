@@ -9,9 +9,18 @@ type Query {
 }
 
 type Mutation {
-  userApplyForGrant(userId: ID!, grantId: ID!): GrantUserInteraction!
-  userLikeGrant(userId: ID!, grantId: ID!): GrantUserInteraction!
-  userDisikeGrant(userId: ID!, grantId: ID!): GrantUserInteraction!
+  interactWithGrant(
+    grantId: ID!
+    userId: ID!
+    interactionType: GrantInteractionType!
+    feedbackText: String
+  ): GrantUserInteraction!
+}
+
+enum GrantInteractionType {
+  THUMBS_UP
+  THUMBS_DOWN
+  APPLY
 }
 
 type Grant {

@@ -1,20 +1,22 @@
-import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Image as ImageNextUI, Tooltip } from "@nextui-org/react";
+import { Grant, LikedStatus } from "@lib/graphql-typings.generated";
+import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Image as ImageNextUI, Popover, PopoverContent, PopoverTrigger, Textarea, Tooltip } from "@nextui-org/react";
 import MoneyBagIcon from "@public/icons/money-bag.svg";
 import ThumbsDownIcon from '@public/icons/thumbs_down.svg';
 import ThumbsUpIcon from '@public/icons/thumbs_up.svg';
 import Image from "next/image";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-type MatchCardProps = {
+type MatchedGrantCardProps = {
+    // General props
     className: string;
 
-    foundationName: string;
-    grantName: string;
-    location: string;
-    areasOfFunding: string[]
-    amountDollars: number;
-    applicationStartDate: Date;
-    applicationEndDate: Date;
+    // Data props
+    grant: Grant
+
+    // Action / Callback props
+    onThumbsUp: (grantId: string, feedbackText?: string) => void
+    onThumbsDown: (grantId: string, feedbackText?: string) => void
+    onApply: (grantId: string) => void
 };
 
 /**
@@ -72,19 +74,36 @@ const FundingAreasContainer = ({ fundingAreas }: { fundingAreas: string[] }) => 
 /**
  * Match card component
  */
-const MatchCard = (props: MatchCardProps) => {
-
+const MatchedGrantCard = (props: MatchedGrantCardProps) => {
+    // Props
     const {
         className,
-        foundationName,
-        grantName,
+        grant,
+        onThumbsUp,
+        onThumbsDown,
+        onApply,
+    } = props;
+
+    const {
+        id,
+        foundation: {
+            name: foundationName
+        },
+        name: grantName,
         location,
         areasOfFunding,
         amountDollars,
         applicationStartDate,
-        applicationEndDate,
-    } = props;
+        applicationEndDate
+    } = grant;
 
+
+    // State variables
+    const [isFeedbackPopoverOpen, setIsFeedbackPopoverOpen] = useState(false);
+    const [likedStatus, setLikedStatus] = useState<LikedStatus | undefined>(undefined);
+    const [feedbackText, setFeedbackText] = useState('');
+
+    // General variables
     const applicationStartDateStr = useMemo(
         () => {
             if (new Date(applicationStartDate) > new Date()) {
@@ -101,35 +120,85 @@ const MatchCard = (props: MatchCardProps) => {
         [applicationEndDate]
     );
 
+
+    // Event handlers
+    const toggleFeedbackPopover = useCallback(() => (
+        setIsFeedbackPopoverOpen(!isFeedbackPopoverOpen)
+    ),
+        [isFeedbackPopoverOpen, setIsFeedbackPopoverOpen]
+    );
+
+    const handleOnPressThumbsUpButton = useCallback(() => {
+        setLikedStatus(isFeedbackPopoverOpen ? undefined : LikedStatus.LIKED)
+        toggleFeedbackPopover();
+    }, [isFeedbackPopoverOpen, setLikedStatus, toggleFeedbackPopover]);
+
+    const handleOnPressThumbsDownButton = useCallback(() => {
+        setLikedStatus(isFeedbackPopoverOpen ? undefined : LikedStatus.DISLIKED);
+        toggleFeedbackPopover();
+    }, [isFeedbackPopoverOpen, setLikedStatus, toggleFeedbackPopover])
+
+    const handleOnPressSubmitFeedback = useCallback(() => {
+
+    }, []);
+
+
     return (
         <Card className={`flex flex-grow max-w-xs p-4 ${className}`}>
             <CardHeader className="flex flex-col h-auto py-0">
 
                 {/* Organization avatar & thumb icons row */}
-                <div className="flex items-center justify-between w-full mb-1">
 
+
+                <div className="flex items-center justify-between w-full mb-1">
                     <Avatar name={foundationName[0]} radius="full" />
 
-                    <div className="flex">
-                        <Button isIconOnly className="mr-4 bg-white border p-1">
-                            <Image
-                                src={ThumbsUpIcon}
-                                alt="Thumbs up"
-                                width={32}
-                                height={32}
-                            />
-                        </Button>
+                    <Popover placement="bottom" isOpen={isFeedbackPopoverOpen}>
+                        <PopoverTrigger>
+                            <div className="flex">
+                                <Button
+                                    isIconOnly
+                                    className="mr-4 bg-white border p-1"
+                                    onPress={handleOnPressThumbsUpButton}
+                                >
+                                    <Image
+                                        src={ThumbsUpIcon}
+                                        alt="Thumbs up"
+                                        width={32}
+                                        height={32}
+                                    />
+                                </Button>
 
-                        <Button isIconOnly className="bg-white border p-1">
-                            <Image
-                                src={ThumbsDownIcon}
-                                alt="Thumbs down"
-                                width={32}
-                                height={32}
+                                <Button
+                                    isIconOnly
+                                    className="bg-white border p-1"
+                                    onPress={handleOnPressThumbsDownButton}
+                                >
+                                    <Image
+                                        src={ThumbsDownIcon}
+                                        alt="Thumbs down"
+                                        width={32}
+                                        height={32}
+                                    />
+                                </Button>
+                            </div>
+                        </PopoverTrigger>
+
+                        <PopoverContent>
+                            <Textarea
+                                className="mb-2"
+                                placeholder="(Optional) Write some feedback."
+                                value={feedbackText}
+                                onValueChange={setFeedbackText}
                             />
-                        </Button>
-                    </div>
+
+                            <Button color="primary" onPress={handleOnPressSubmitFeedback}>
+                                Submit
+                            </Button>
+                        </PopoverContent>
+                    </Popover>
                 </div>
+
 
 
                 <div className="flex flex-col justify-start w-full">
@@ -196,10 +265,16 @@ const MatchCard = (props: MatchCardProps) => {
             </CardBody>
 
             <CardFooter>
-                <Button color="primary" fullWidth>Apply here</Button>
+                <Button
+                    color="primary"
+                    fullWidth
+                    onPress={() => onApply(id)}
+                >
+                    Apply here
+                </Button>
             </CardFooter>
         </Card>
     )
 };
 
-export default MatchCard;
+export default MatchedGrantCard;

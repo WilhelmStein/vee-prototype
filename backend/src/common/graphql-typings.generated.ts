@@ -8,6 +8,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum GrantInteractionType {
+    THUMBS_UP = "THUMBS_UP",
+    THUMBS_DOWN = "THUMBS_DOWN",
+    APPLY = "APPLY"
+}
+
 export enum ApplicationStatus {
     PENDING = "PENDING",
     REJECTED = "REJECTED",
@@ -32,9 +38,7 @@ export interface IQuery {
 }
 
 export interface IMutation {
-    userApplyForGrant(userId: string, grantId: string): GrantUserInteraction | Promise<GrantUserInteraction>;
-    userLikeGrant(userId: string, grantId: string): GrantUserInteraction | Promise<GrantUserInteraction>;
-    userDisikeGrant(userId: string, grantId: string): GrantUserInteraction | Promise<GrantUserInteraction>;
+    interactWithGrant(grantId: string, userId: string, interactionType: GrantInteractionType, feedbackText?: Nullable<string>): GrantUserInteraction | Promise<GrantUserInteraction>;
 }
 
 export interface Grant {
