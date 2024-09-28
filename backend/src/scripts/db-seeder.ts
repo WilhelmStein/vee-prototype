@@ -3,16 +3,15 @@ import { AppModule } from "@/app.module";
 import { SeedService } from "@seed/seed.service";
 
 const bootstrap = async () => {
-    const app = await NestFactory.createApplicationContext(AppModule);
-    const seedService = app.get(SeedService);
-
     try {
+        const app = await NestFactory.createApplicationContext(AppModule);
+        const seedService = app.get(SeedService);
+
         await seedService.seed(); // Call your seeding method
         console.log('Seeding completed successfully 🌹.');
+        app.close()
     } catch (error) {
         console.error('Seeding failed 🥀:\n\t', error);
-    } finally {
-        await app.close(); // Close the application context
     }
 };
 

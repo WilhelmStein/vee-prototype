@@ -59,6 +59,7 @@ export interface GrantUserInteraction {
     likedStatus?: Nullable<LikedStatus>;
     feedbackText?: Nullable<string>;
     status?: Nullable<ApplicationStatus>;
+    matchDate: Date;
 }
 
 export interface User {

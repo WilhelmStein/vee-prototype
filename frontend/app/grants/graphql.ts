@@ -22,6 +22,7 @@ export const GET_ALL_GRANT_USER_INTERACTIONS_OF_USER = gql`
     allGrantUserInteractionsOfUser(userId: $userId) {
       likedStatus
       status
+      matchDate
       grant {
         name
         applicationStartDate

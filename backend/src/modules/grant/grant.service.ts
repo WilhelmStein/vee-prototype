@@ -50,6 +50,7 @@ export class GrantService {
     async getAllGrantUserInteractionsOfUser(userId: number): Promise<GrantUserInteraction[]> {
         const interactions: GrantUserInteraction[] = await this.grantUserInteractionRepo.find({
             where: { user: { id: userId } },
+            order: { matchDate: 'DESC' },
             relations: ['grant', 'grant.foundation']
         })
 
@@ -77,6 +78,7 @@ export class GrantService {
         // If not, create one
         if (!interaction) {
             interaction = this.grantUserInteractionRepo.create({
+                matchDate: new Date(),
                 grant: { id: grantId },
                 user: { id: userId }
             })

@@ -22,4 +22,7 @@ export class GrantUserInteraction {
 
     @Column({ type: 'enum', enum: ApplicationStatus, nullable: true })
     status: ApplicationStatus;
+
+    @Column({ type: 'timestamp' })
+    matchDate: Date;
 }

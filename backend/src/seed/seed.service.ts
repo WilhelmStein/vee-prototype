@@ -165,17 +165,20 @@ export class SeedService {
             {
                 user: savedUsers[0],
                 grant: savedGrants[3],
-                status: ApplicationStatus.PENDING
+                status: ApplicationStatus.PENDING,
+                matchDate: new Date()
             },
             {
                 user: savedUsers[0],
                 grant: savedGrants[4],
-                status: ApplicationStatus.ACCEPTED
+                status: ApplicationStatus.ACCEPTED,
+                matchDate: new Date()
             },
             {
                 user: savedUsers[0],
                 grant: savedGrants[5],
-                status: ApplicationStatus.REJECTED
+                status: ApplicationStatus.REJECTED,
+                matchDate: new Date()
             },
         ];
 
