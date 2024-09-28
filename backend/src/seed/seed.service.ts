@@ -69,6 +69,8 @@ export class SeedService {
             ))
         )
 
+        const applicationStartDate = getFutureDate(-5);
+
         // Grants
         const grantsData: Partial<Grant>[] = [
             {
@@ -76,7 +78,7 @@ export class SeedService {
                 location: "Cremonia",
                 areasOfFunding: ["Heavy Industry", "Mining", "Metalworks", "Steel Refining", "Metalworking", "Railworks"],
                 amountDollars: 25000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(10),
                 foundation: savedFoundations[0],
             },
@@ -85,7 +87,7 @@ export class SeedService {
                 location: "Attiki, Greece",
                 areasOfFunding: ["Shipworks", "Transportation", "AI", "Automation"],
                 amountDollars: 70000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(25),
                 foundation: savedFoundations[1],
             },
@@ -94,7 +96,7 @@ export class SeedService {
                 location: "Attiki, Greece",
                 areasOfFunding: ["Shipworks", "Extraction", "Whales", "AI", "Automation"],
                 amountDollars: 25000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(15),
                 foundation: savedFoundations[1],
             },
@@ -103,7 +105,7 @@ export class SeedService {
                 location: "Zanzibar",
                 areasOfFunding: ["Shipworks", "Diamond Dogs", "Construction"],
                 amountDollars: 250000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(125),
                 foundation: savedFoundations[1],
             },
@@ -112,7 +114,7 @@ export class SeedService {
                 location: "Attiki, Greece",
                 areasOfFunding: ["Telecoms", "Construction"],
                 amountDollars: 122000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(25),
                 foundation: savedFoundations[2],
             },
@@ -121,7 +123,7 @@ export class SeedService {
                 location: "Paris",
                 areasOfFunding: ["Telecoms", "Construction"],
                 amountDollars: 1222000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(25),
                 foundation: savedFoundations[2],
             },
@@ -130,7 +132,7 @@ export class SeedService {
                 location: "Rome",
                 areasOfFunding: ["Telecoms", "Construction"],
                 amountDollars: 122000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(25),
                 foundation: savedFoundations[2],
             },
@@ -139,7 +141,7 @@ export class SeedService {
                 location: "London",
                 areasOfFunding: ["Arts", "Theater"],
                 amountDollars: 50000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(25),
                 foundation: savedFoundations[3],
             },
@@ -148,7 +150,7 @@ export class SeedService {
                 location: "London",
                 areasOfFunding: ["Arts", "Theater"],
                 amountDollars: 50000,
-                applicationStartDate: new Date(),
+                applicationStartDate,
                 applicationEndDate: getFutureDate(25),
                 foundation: savedFoundations[3],
             },
@@ -160,25 +162,27 @@ export class SeedService {
             ))
         )
 
+        const matchDate = getFutureDate(-1);
+
         // grant-user-interactions
         const grantUserInteractionsData: Partial<GrantUserInteraction>[] = [
             {
                 user: savedUsers[0],
                 grant: savedGrants[3],
                 status: ApplicationStatus.PENDING,
-                matchDate: new Date()
+                matchDate
             },
             {
                 user: savedUsers[0],
                 grant: savedGrants[4],
                 status: ApplicationStatus.ACCEPTED,
-                matchDate: new Date()
+                matchDate
             },
             {
                 user: savedUsers[0],
                 grant: savedGrants[5],
                 status: ApplicationStatus.REJECTED,
-                matchDate: new Date()
+                matchDate
             },
         ];
 
